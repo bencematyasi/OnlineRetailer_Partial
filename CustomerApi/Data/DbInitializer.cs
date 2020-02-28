@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CustomerApi.Models;
 
 namespace CustomerApi.Data
 {
@@ -21,7 +22,7 @@ namespace CustomerApi.Data
             {
                 new Customer { },
                 new Customer { },
-                new Customer {  }
+                new Customer { }
             };
 
             context.Customers.AddRange(customers);

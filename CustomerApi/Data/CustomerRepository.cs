@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using CustomerApi.Models;
 
 
 namespace CustomerApi.Data
@@ -39,7 +40,7 @@ namespace CustomerApi.Data
 
         void IRepository<Customer>.Remove(int id)
         {
-            var product = db.Customers.FirstOrDefault(c => c.Id == id);
+            var customer = db.Customers.FirstOrDefault(c => c.Id == id);
             db.Customers.Remove(customer);
             db.SaveChanges();
         }
