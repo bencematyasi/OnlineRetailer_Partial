@@ -1,4 +1,6 @@
-﻿namespace CustomerApi.Models
+﻿using System.ComponentModel;
+
+namespace CustomerApi.Models
 {
     public class Customer
     {

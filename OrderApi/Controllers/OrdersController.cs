@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderApi.Data;
 using OrderApi.Models;
 using RestSharp;
+using Status = OrderApi.Models.Status;
 
 namespace OrderApi.Controllers
 {
@@ -87,6 +88,7 @@ namespace OrderApi.Controllers
 
                         if (updateResponse.IsSuccessful)
                         {
+                            ChangeCreditStanding(order.CustomerId);
                             var newOrder = repository.Add(converter.OrderDTOToModel(order));
                             return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, converter.ModelToOrderDTO(newOrder));
                         }
@@ -116,6 +118,20 @@ namespace OrderApi.Controllers
             {
                 return false;
             }
+        }
+
+        private void ChangeCreditStanding(int id)
+        {
+            RestClient c = new RestClient();
+            c.BaseUrl = new Uri("https://localhost:5001/customers/");
+            CustomerDTO updateDto = new CustomerDTO()
+            {
+                Id = id,
+                CreditStanding = false
+            };
+            var customerUpdateReq = new RestRequest(id.ToString(), Method.PUT);
+            customerUpdateReq.AddJsonBody(updateDto);
+            c.Execute(customerUpdateReq);
         }
     }
 }

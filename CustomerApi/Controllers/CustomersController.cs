@@ -53,22 +53,19 @@ namespace CustomerApi.Controllers
 
         // POST: Customers
         [HttpPost]
-        public IActionResult Post([FromBody] CustomerDTO customer)                  //NEEDS TO BE IMPLEMENTED!!
+        public IActionResult Post([FromBody] CustomerDTO customer)     
         {
             if (customer == null)
             {
                 return BadRequest("customer is null");
             }
-            return NoContent();
-
-            customer.CreditStanding = true;
-            var newCustomer = repository.Add(customer);
+            var newCustomer = repository.Add(converter.CustomerDTOToModel(customer));
             return new ObjectResult(newCustomer);
         }
 
         // PUT: Customers/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Customer customer)
+        public IActionResult Put(int id, [FromBody] CustomerDTO customer)
         {
             if (customer == null || customer.Id == id)
             {
@@ -80,14 +77,9 @@ namespace CustomerApi.Controllers
             {
                 return BadRequest(" The modified Customer is null");
             }
-            modifiedCustomer.Name = customer.Name;
-            modifiedCustomer.ShippingAddress = customer.ShippingAddress;
-            modifiedCustomer.PhoneNumber = customer.PhoneNumber;
-            modifiedCustomer.Email = customer.Email;
-            modifiedCustomer.BillingAddress = customer.BillingAddress;
             modifiedCustomer.CreditStanding = customer.CreditStanding;
-
-            repository.Edit(customer);
+            
+            repository.Edit(modifiedCustomer);
             return new NoContentResult();
 
         }

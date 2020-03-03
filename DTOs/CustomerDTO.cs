@@ -1,4 +1,6 @@
-﻿namespace DTOs
+﻿using System.ComponentModel;
+
+namespace DTOs
 {
     public class CustomerDTO
     {
@@ -8,6 +10,7 @@
         public string PhoneNumber { get; set; }
         public string BillingAddress { get; set; }
         public string ShippingAddress { get; set; }
+        [DefaultValue(true)]
         public bool CreditStanding { get; set; }
     }
 }
