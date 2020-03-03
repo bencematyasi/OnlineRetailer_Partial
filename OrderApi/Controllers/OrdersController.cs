@@ -59,9 +59,9 @@ namespace OrderApi.Controllers
                 return BadRequest();
             }
 
-            if (!CheckCustomerExists(order.CustomerId))
+            if (!CheckCustomer(order.CustomerId))
             {
-                return BadRequest("Customer cannot be found");
+                return BadRequest("Customer cannot be found or Customer has an unpaid bill");
             }
 
             // Call ProductApi to get the product ordered
@@ -101,7 +101,7 @@ namespace OrderApi.Controllers
         }
 
         //WIP, needs refinements
-        private bool CheckCustomerExists(int id)
+        private bool CheckCustomer(int id)
         {
             RestClient c = new RestClient();
 
@@ -112,6 +112,12 @@ namespace OrderApi.Controllers
             //this part
             if (response.Data != null)
             {
+                var customer = response.Data;
+                if (customer.CreditStanding == false)
+                {
+                    return false;
+                }
+
                 return true;
             }
             else
