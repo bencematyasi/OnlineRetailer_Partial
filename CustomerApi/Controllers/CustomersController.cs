@@ -8,6 +8,7 @@ using CustomerApi.Models;
 using DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestSharp;
 
 namespace CustomerApi.Controllers
 {
@@ -60,18 +61,47 @@ namespace CustomerApi.Controllers
             }
             return NoContent();
 
+            customer.CreditStanding = true;
+            var newCustomer = repository.Add(customer);
+            return new ObjectResult(newCustomer);
         }
 
         // PUT: Customers/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] CustomerDTO customer)                   //NEEDS TO BE IMPLEMENTED!!
+        public IActionResult Put(int id, [FromBody] Customer customer)
         {
+            if (customer == null || customer.Id == id)
+            {
+                return BadRequest(" Customer is null or the ids are not identical");
+            }
+
+            var modifiedCustomer = repository.Get(id);
+            if (modifiedCustomer == null)
+            {
+                return BadRequest(" The modified Customer is null");
+            }
+            modifiedCustomer.Name = customer.Name;
+            modifiedCustomer.ShippingAddress = customer.ShippingAddress;
+            modifiedCustomer.PhoneNumber = customer.PhoneNumber;
+            modifiedCustomer.Email = customer.Email;
+            modifiedCustomer.BillingAddress = customer.BillingAddress;
+            modifiedCustomer.CreditStanding = customer.CreditStanding;
+
+            repository.Edit(customer);
+            return new NoContentResult();
+
         }
 
         // DELETE: Customers/5
         [HttpDelete("{id}")]
-        public void Delete(int id)                                                  //NEEDS TO BE IMPLEMENTED!!
+        public IActionResult Delete(int id)
         {
+            if (repository.Get(id) == null)
+            {
+                return BadRequest("no customer with this id: " + id);
+            }
+            repository.Remove(id);
+            return new NoContentResult();
         }
     }
 }
