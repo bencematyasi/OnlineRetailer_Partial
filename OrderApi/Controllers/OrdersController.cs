@@ -75,5 +75,14 @@ namespace OrderApi.Controllers
             return NoContent();
         }
 
+        private bool CheckCustomerExists(int id)
+        {
+            RestClient c = new RestClient();
+            
+            c.BaseUrl = new Uri("https://localhost:5001/customers/");
+            var request = new RestRequest(id.ToString(), Method.GET);
+            var response = c.Execute<Customer>(request);
+            var orderedProduct = response.Data;
+        }
     }
 }
