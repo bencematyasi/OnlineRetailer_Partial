@@ -112,13 +112,7 @@ namespace OrderApi.Controllers
             //this part
             if (response.Data != null)
             {
-                var customer = response.Data;
-                if (customer.CreditStanding == false)
-                {
-                    return false;
-                }
-
-                return true;
+                return response.Data.CreditStanding;
             }
             else
             {

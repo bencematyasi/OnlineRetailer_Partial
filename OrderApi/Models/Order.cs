@@ -11,8 +11,15 @@ namespace OrderApi.Models
         Paid
     }
 
+
     public class Order
     {
+
+        public Order()
+        {
+            this.OrderLines = new List<OrderLine>();
+        }
+
         public int Id { get; set; }
         public int CustomerId { get; set; }
         public DateTime? Date { get; set; }

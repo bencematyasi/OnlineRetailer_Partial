@@ -14,7 +14,7 @@ namespace OrderApi
             ret.Date = dto.Date;
             Enum.TryParse(typeof(Models.Status), dto.Status.ToString(), out var convertedEnum);
             ret.Status = (Models.Status)convertedEnum;
-
+            
             foreach (var orderline in dto.OrderLines)
             {
                 ret.OrderLines.Add(OrderLineDTOToModel(dto.Id, orderline));
