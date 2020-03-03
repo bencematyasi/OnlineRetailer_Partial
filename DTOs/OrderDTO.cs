@@ -13,6 +13,11 @@ namespace DTOs
 
     public class OrderDTO
     {
+        public OrderDTO()
+        {
+            this.OrderLines = new List<OrderLineDTO>();
+        }
+
         public int Id { get; set; }
         public int CustomerId { get; set; }
         public DateTime? Date { get; set; }

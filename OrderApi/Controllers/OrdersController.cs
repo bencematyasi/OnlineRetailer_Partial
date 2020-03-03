@@ -64,11 +64,16 @@ namespace OrderApi.Controllers
                 return BadRequest("Customer cannot be found");
             }
 
+            if (!CheckCustomerCreditStanding(order.CustomerId))
+            {
+                return BadRequest("Customer is in a bad standing");
+            }
+
             // Call ProductApi to get the product ordered
             RestClient c = new RestClient();
             // You may need to change the port number in the BaseUrl below
             // before you can run the request.
-            c.BaseUrl = new Uri("https://localhost:5001/products/");
+            c.BaseUrl = new Uri("https://localhost:5004/products/");
             if (order.OrderLines.Any())
             {
                 foreach (var orderline in order.OrderLines)
@@ -92,12 +97,36 @@ namespace OrderApi.Controllers
                             var newOrder = repository.Add(converter.OrderDTOToModel(order));
                             return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, converter.ModelToOrderDTO(newOrder));
                         }
+                    } else
+                    {
+                        return BadRequest($"Not enough {orderedProduct.Name} in stock!");
                     }
                 }
             }
 
             // If the order could not be created, "return no content".
             return NoContent();
+        }
+
+        /// <summary>
+        /// Check a customers credit standing
+        /// </summary>
+        /// <param name="customerId">The ID of the customer</param>
+        /// <returns>True, if the customer is in good standing, false otherwise.</returns>
+        private bool CheckCustomerCreditStanding(int customerId)
+        {
+            RestClient c = new RestClient();
+            c.BaseUrl = new Uri("https://localhost:5001/customers/");
+
+            RestRequest request = new RestRequest
+            {
+                Resource = customerId.ToString(),
+                Method = Method.GET
+            };
+
+            IRestResponse<CustomerDTO> response = c.Execute<CustomerDTO>(request);
+
+            return response.Data.CreditStanding;
         }
 
         //WIP, needs refinements
