@@ -68,7 +68,7 @@ namespace OrderApi.Controllers
             RestClient c = new RestClient();
             // You may need to change the port number in the BaseUrl below
             // before you can run the request.
-            c.BaseUrl = new Uri("https://localhost:5001/products/");
+            c.BaseUrl = new Uri("https://productapi/products/");
             if (order.OrderLines.Any())
             {
                 foreach (var orderline in order.OrderLines)
@@ -105,7 +105,7 @@ namespace OrderApi.Controllers
         {
             RestClient c = new RestClient();
 
-            c.BaseUrl = new Uri("https://localhost:5001/customers/");
+            c.BaseUrl = new Uri("https://customerapi/customers/");
             var request = new RestRequest(id.ToString(), Method.GET);
             var response = c.Execute<CustomerDTO>(request);
 
@@ -123,7 +123,7 @@ namespace OrderApi.Controllers
         private void ChangeCreditStanding(int id)
         {
             RestClient c = new RestClient();
-            c.BaseUrl = new Uri("https://localhost:5001/customers/");
+            c.BaseUrl = new Uri("https://customerapi/customers/");
             CustomerDTO updateDto = new CustomerDTO()
             {
                 Id = id,
