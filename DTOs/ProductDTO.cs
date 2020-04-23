@@ -1,7 +1,6 @@
-﻿using System;
-namespace OrderApi.Models
+﻿namespace DTOs
 {
-    public class Product
+    public class ProductDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }

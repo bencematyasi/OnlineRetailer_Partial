@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DTOs;
 using Microsoft.AspNetCore.Mvc;
 using ProductApi.Data;
 using ProductApi.Models;
@@ -10,17 +11,26 @@ namespace ProductApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IRepository<Product> repository;
+        private readonly DataConverter converter;
 
         public ProductsController(IRepository<Product> repos)
         {
             repository = repos;
+            converter = new DataConverter();
         }
 
         // GET products
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IEnumerable<ProductDTO> Get()
         {
-            return repository.GetAll();
+            var models = repository.GetAll();
+            List<ProductDTO> ret = new List<ProductDTO>();
+            foreach (var model in models)
+            {
+                ret.Add(converter.ModelToProductDTO(model));
+            }
+
+            return ret;
         }
 
         // GET products/5
@@ -32,26 +42,26 @@ namespace ProductApi.Controllers
             {
                 return NotFound();
             }
-            return new ObjectResult(item);
+            return new ObjectResult(converter.ModelToProductDTO(item));
         }
 
         // POST products
         [HttpPost]
-        public IActionResult Post([FromBody]Product product)
+        public IActionResult Post([FromBody]ProductDTO product)
         {
             if (product == null)
             {
                 return BadRequest();
             }
 
-            var newProduct = repository.Add(product);
+            var newProduct = repository.Add(converter.ProductDTOToModel(product));
 
-            return CreatedAtRoute("GetProduct", new { id = newProduct.Id }, newProduct);
+            return CreatedAtRoute("GetProduct", new { id = newProduct.Id }, converter.ModelToProductDTO(newProduct));
         }
 
         // PUT products/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Product product)
+        public IActionResult Put(int id, [FromBody]ProductDTO product)
         {
             if (product == null || product.Id != id)
             {
